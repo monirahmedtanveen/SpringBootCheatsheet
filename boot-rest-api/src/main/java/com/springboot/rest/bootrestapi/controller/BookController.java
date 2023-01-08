@@ -49,7 +49,7 @@ public class BookController {
     @PutMapping("/api/books/{id}")
     public ResponseEntity<Book> updateBook(@RequestBody Book book, @PathVariable("id") Long bookId) {
         try {
-            return ResponseEntity.of(Optional.of(bookService.updateBook(book, bookId)));
+            return ResponseEntity.ok().body(bookService.updateBook(book, bookId));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
