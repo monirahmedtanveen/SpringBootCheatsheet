@@ -13,17 +13,19 @@ public class User {
     private int id;
     private String name;
     private String city;
+    private int age;
     private String status;
 
     public User() {
         super();
     }
 
-    public User(int id, String name, String city, String status) {
+    public User(int id, String name, String city, int age, String status) {
         super();
         this.id = id;
         this.name = name;
         this.city = city;
+        this.age = age;
         this.status = status;
     }
 
@@ -33,6 +35,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public int getAge() {
+        return age;
     }
 
     public String getCity() {
@@ -55,6 +61,10 @@ public class User {
         this.city = city;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -65,6 +75,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", city='" + city + '\'' +
+                ", age='" + age + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }
