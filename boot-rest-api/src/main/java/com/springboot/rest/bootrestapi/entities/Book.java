@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "build")
 @Builder
 public class Book {
     @Id
@@ -19,5 +19,7 @@ public class Book {
     private long id;
     private String title;
     private String author;
+    private String authorEmail;
+    private String authorMobile;
     private String description;
 }

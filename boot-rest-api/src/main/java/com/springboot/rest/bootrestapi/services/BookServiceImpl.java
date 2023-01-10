@@ -1,9 +1,12 @@
 package com.springboot.rest.bootrestapi.services;
 
+import com.springboot.rest.bootrestapi.dto.BookRequest;
 import com.springboot.rest.bootrestapi.entities.Book;
+import com.springboot.rest.bootrestapi.exception.UserNotFoundException;
 import com.springboot.rest.bootrestapi.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +18,8 @@ public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
 
     @Override
-    public Book saveBook(Book book) {
+    public Book saveBook(@RequestBody BookRequest bookRequest) {
+        Book book = Book.build(0, bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getAuthorEmail(), bookRequest.getAuthorMobile(), bookRequest.getDescription());
         return bookRepository.save(book);
     }
 
@@ -25,31 +29,41 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book fetchBook(Long bookId) {
-        return bookRepository.findById(bookId).orElse(null);
+    public Book fetchBook(Long bookId) throws UserNotFoundException {
+        Book bookDb = bookRepository.findById(bookId).orElse(null);
+
+        if (bookDb == null) {
+            throw new UserNotFoundException("user not found with the specified identifier.");
+        }
+
+        return bookDb;
     }
 
     @Override
-    public Book updateBook(Book book, Long bookId) {
-        Book bookDb = bookRepository.findById(bookId).get();
+    public Book updateBook(@RequestBody BookRequest bookRequest, Long bookId) throws UserNotFoundException {
+        Book bookDb = bookRepository.findById(bookId).orElse(null);
 
-        if (Objects.nonNull(book.getTitle()) && !"".equalsIgnoreCase(book.getTitle())) {
-            bookDb.setTitle(book.getTitle());
+        if (bookDb == null) {
+            throw new UserNotFoundException("user not found with the specified identifier.");
         }
 
-        if (Objects.nonNull(book.getAuthor()) && !"".equalsIgnoreCase(book.getAuthor())) {
-            bookDb.setAuthor(book.getAuthor());
-        }
-
-        if (Objects.nonNull(book.getDescription()) && !"".equalsIgnoreCase(book.getDescription())) {
-            bookDb.setDescription(book.getDescription());
-        }
+        bookDb.setTitle(bookRequest.getTitle());
+        bookDb.setAuthor(bookRequest.getAuthor());
+        bookDb.setAuthorEmail(bookRequest.getAuthorEmail());
+        bookDb.setAuthorMobile(bookRequest.getAuthorMobile());
+        bookDb.setDescription(bookRequest.getDescription());
 
         return bookRepository.save(bookDb);
     }
 
     @Override
-    public void deleteBook(Long bookId) {
+    public void deleteBook(Long bookId) throws UserNotFoundException {
+        Book bookDb = bookRepository.findById(bookId).orElse(null);
+
+        if (bookDb == null) {
+            throw new UserNotFoundException("user not found with the specified identifier.");
+        }
+
         bookRepository.deleteById(bookId);
     }
 }
