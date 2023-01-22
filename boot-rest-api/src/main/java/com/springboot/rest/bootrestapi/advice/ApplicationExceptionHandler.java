@@ -1,6 +1,6 @@
 package com.springboot.rest.bootrestapi.advice;
 
-import com.springboot.rest.bootrestapi.exception.UserNotFoundException;
+import com.springboot.rest.bootrestapi.exception.EntityNotFoundException;
 import com.springboot.rest.bootrestapi.global.dto.ApiResponse;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -27,9 +27,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
@@ -134,8 +132,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 //    }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(EntityNotFoundException ex) {
         List<String> errors = new ArrayList<>();
         errors.add(ex.getMessage());
         final ApiResponse apiResponse = new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), errors);

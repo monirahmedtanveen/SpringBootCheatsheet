@@ -1,7 +1,7 @@
 package com.springboot.rest.bootrestapi.controller;
 
 import com.springboot.rest.bootrestapi.dto.BookRequest;
-import com.springboot.rest.bootrestapi.exception.UserNotFoundException;
+import com.springboot.rest.bootrestapi.exception.EntityNotFoundException;
 import com.springboot.rest.bootrestapi.global.dto.ApiResponse;
 import com.springboot.rest.bootrestapi.global.utils.EndpointUtils;
 import com.springboot.rest.bootrestapi.services.BookService;
@@ -31,7 +31,7 @@ public class BookController {
     }
 
     @GetMapping(EndpointUtils.SHOW_BOOK)
-    public ResponseEntity<ApiResponse> getBook(@PathVariable("id") Long bookId) throws UserNotFoundException {
+    public ResponseEntity<ApiResponse> getBook(@PathVariable("id") Long bookId) throws EntityNotFoundException {
         return new ResponseEntity<>(
                 new ApiResponse(
                         HttpStatus.OK.value(),
@@ -41,7 +41,7 @@ public class BookController {
     }
 
     @PostMapping(EndpointUtils.CREATE_BOOK)
-    public ResponseEntity<ApiResponse> saveBook(@Valid @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<ApiResponse> saveBook(@Valid @RequestBody BookRequest bookRequest) throws EntityNotFoundException {
         return new ResponseEntity<>(
                 new ApiResponse(
                         HttpStatus.OK.value(),
@@ -52,7 +52,7 @@ public class BookController {
     }
 
     @PutMapping(EndpointUtils.UPDATE_BOOK)
-    public ResponseEntity<ApiResponse> updateBook(@Valid @RequestBody BookRequest bookRequest, @PathVariable("id") Long bookId) throws UserNotFoundException {
+    public ResponseEntity<ApiResponse> updateBook(@Valid @RequestBody BookRequest bookRequest, @PathVariable("id") Long bookId) throws EntityNotFoundException {
         return new ResponseEntity<>(
                 new ApiResponse(
                         HttpStatus.OK.value(),
@@ -63,7 +63,7 @@ public class BookController {
     }
 
     @DeleteMapping(EndpointUtils.DELETE_BOOK)
-    public ResponseEntity<ApiResponse> deleteBook(@PathVariable("id") Long bookId) throws UserNotFoundException {
+    public ResponseEntity<ApiResponse> deleteBook(@PathVariable("id") Long bookId) throws EntityNotFoundException {
         bookService.deleteBook(bookId);
         return new ResponseEntity<>(
                 new ApiResponse(

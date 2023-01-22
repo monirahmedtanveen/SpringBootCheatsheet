@@ -1,13 +1,14 @@
 package com.springboot.rest.bootrestapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "books")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -15,11 +16,17 @@ import javax.persistence.Id;
 @Builder
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Author author;
     private String title;
-    private String author;
-    private String authorEmail;
-    private String authorMobile;
+    @Column(name = "sub_title")
+    private String subTitle;
     private String description;
+    @Column(name = "number_of_pages")
+    private int numberOfPages;
 }
