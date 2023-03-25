@@ -1,7 +1,8 @@
-package rc.bootsecurity;
+package rc.bootsecurity.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,21 +14,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private UserPrincipleDetailsService userPrincipleDetailsService;
+
+    public SecurityConfiguration(UserPrincipleDetailsService userPrincipleDetailsService) {
+        this.userPrincipleDetailsService = userPrincipleDetailsService;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("admin")
-                .password(passwordEncoder().encode("admin123"))
-                .roles("ADMIN").authorities("ACCESS_TEST1", "ACCESS_TEST2")
-                .and()
-                .withUser("monir.ahmed")
-                .password(passwordEncoder().encode("Password100@"))
-                .roles("USER")
-                .and()
-                .withUser("manager")
-                .password(passwordEncoder().encode("manager123"))
-                .roles("MANAGER").authorities("ACCESS_TEST1");
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
@@ -41,8 +36,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/management/**").hasAnyRole("ADMIN", "MANAGER")
                 .antMatchers("/api/public/test1").hasAuthority("ACCESS_TEST1")
                 .antMatchers("/api/public/test2").hasAuthority("ACCESS_TEST2")
+                .antMatchers("/api/public/users").permitAll()
                 .and()
                 .httpBasic();
+    }
+
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(this.userPrincipleDetailsService);
+
+        return daoAuthenticationProvider;
     }
 
     @Bean
